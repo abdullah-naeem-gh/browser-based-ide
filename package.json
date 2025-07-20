@@ -9,11 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@expo/webpack-config": "^19.0.1",
     "@monaco-editor/react": "^4.7.0",
     "autoprefixer": "^10.4.21",
     "next": "15.4.2",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "react-native-web": "^0.20.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

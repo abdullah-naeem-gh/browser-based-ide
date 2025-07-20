@@ -1,36 +1,120 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mint - React Native Browser IDE 📱
 
-## Getting Started
+**Mint** is a browser-based React Native + Expo IDE with AI assistance, inspired by Cursor, Replit, and Expo Snack. Build, preview, and deploy React Native apps directly from your browser!
 
-First, run the development server:
+## ✨ Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- 🔥 **Live Mobile Preview** - See your React Native app in iOS and Android device simulators
+- 🤖 **AI Assistant** - Get code suggestions, generate components, and debug with integrated AI
+- ⚡ **Expo Ready** - Built-in Expo support with easy deployment capabilities
+- 📁 **File Management** - Full file tree with React Native project structure
+- 🎨 **Modern UI** - Dark theme with professional IDE experience
+- 🚀 **No Setup Required** - Start coding React Native instantly in your browser
+
+## 🚀 Getting Started
+
+### Option 1: Use Online (Coming Soon)
+Visit [mint-ide.vercel.app](https://mint-ide.vercel.app) to start coding immediately.
+
+### Option 2: Run Locally
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/mint-ide.git
+   cd mint-ide
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Start development server**
+   ```bash
+   npm run dev
+   ```
+
+4. **Open your browser**
+   Navigate to `http://localhost:3000` and start building!
+
+## 🏗️ Tech Stack
+
+| Component | Technology |
+|-----------|------------|
+| **Frontend** | Next.js 15 (App Router), TypeScript, Tailwind CSS |
+| **Editor** | Monaco Editor (VS Code editor) |
+| **Mobile Preview** | React Native Web + Expo Web |
+| **AI Features** | OpenAI API (GPT-4) integration |
+| **File System** | Virtual filesystem with browser persistence |
+| **Deployment** | Vercel, Expo Application Services |
+
+## 🎯 Use Cases
+
+- **🏫 Education** - Perfect for teaching React Native development
+- **⚡ Rapid Prototyping** - Quickly test React Native app ideas
+- **📱 Mobile Development** - Full React Native development environment
+- **🤝 Collaboration** - Share live project links with team members
+- **🎓 Learning** - AI-assisted learning for React Native concepts
+
+## 📖 Project Structure
+
+```
+mint-ide/
+├── app/
+│   ├── page.tsx          # Landing page
+│   ├── editor/           # Main IDE interface
+│   └── layout.tsx        # Root layout
+├── components/           # Reusable UI components
+├── templates/            # React Native project templates
+├── lib/                  # Utility functions
+└── styles/               # Global styles
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🤖 AI Features (Coming Soon)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Code Generation** - "Create a login screen with email/password"
+- **Component Library** - AI-generated React Native components
+- **Debugging Assistant** - Intelligent error detection and fixes
+- **Code Documentation** - Automatic JSDoc generation
+- **Refactoring** - Smart code improvements and optimizations
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🎨 Customization
 
-## Learn More
+Mint supports customizing:
+- **Editor themes** - Dark/light mode with syntax highlighting
+- **Device frames** - iOS and Android preview modes
+- **Project templates** - Pre-built app structures
+- **AI prompts** - Custom AI assistant behaviors
 
-To learn more about Next.js, take a look at the following resources:
+## 🌟 Roadmap
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [ ] **Real-time collaboration** - Multiple developers on same project
+- [ ] **GitHub integration** - Import/export projects from GitHub
+- [ ] **Expo Go preview** - Test on real devices via QR code
+- [ ] **Package manager** - Visual npm package installation
+- [ ] **Deployment** - One-click deployment to App Store/Google Play
+- [ ] **Plugin system** - Extensible architecture for third-party plugins
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🤝 Contributing
 
-## Deploy on Vercel
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Inspired by [Expo Snack](https://snack.expo.dev/)
+- Built with [Monaco Editor](https://microsoft.github.io/monaco-editor/)
+- UI design inspired by [Cursor](https://cursor.sh/) and [Replit](https://replit.com/)
+
+---
+
+**Built with ❤️ for the React Native community**
