@@ -9,43 +9,72 @@ const MonacoEditor = dynamic(() => import('@monaco-editor/react'), { ssr: false 
 
 export default function EditorPage() {
   const [code, setCode] = useState(`import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
+import { View, Text, TouchableOpacity, TextInput, ScrollView, Alert, StyleSheet, StatusBar } from 'react-native';
 
 export default function App() {
   const [count, setCount] = useState(0);
   const [text, setText] = useState('');
 
-  const handlePress = () => {
-    setCount(count + 1);
-    Alert.alert('Button Pressed!', \`You've pressed the button \${count + 1} times\`);
+  const handleAlert = () => {
+    Alert.alert('Hello!', 'This is a mobile-style alert! Count is: ' + count);
   };
+
+  const items = Array.from({ length: 20 }, (_, i) => 'Item ' + (i + 1));
 
   return (
     <View style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.title}>Welcome to Mint! 📱</Text>
-        <Text style={styles.subtitle}>Interactive React Native Preview</Text>
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={true}
+      >
+        <View style={styles.header}>
+          <Text style={styles.title}>Welcome to Mint! 📱</Text>
+          <Text style={styles.subtitle}>Scrollable React Native Preview</Text>
+        </View>
         
         <View style={styles.counterContainer}>
           <Text style={styles.counterText}>Count: {count}</Text>
           <TouchableOpacity style={styles.button} onPress={() => setCount(count + 1)}>
             <Text style={styles.buttonText}>Tap Me!</Text>
           </TouchableOpacity>
+          <TouchableOpacity style={styles.alertButton} onPress={handleAlert}>
+            <Text style={styles.buttonText}>Show Alert</Text>
+          </TouchableOpacity>
         </View>
         
-        <TextInput
-          style={styles.textInput}
-          placeholder="Type something..."
-          value={text}
-          onChangeText={setText}
-          placeholderTextColor="#999"
-        />
+        <View style={styles.inputSection}>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Type something..."
+            value={text}
+            onChangeText={setText}
+            placeholderTextColor="#999"
+          />
+          
+          {text ? (
+            <Text style={styles.inputDisplay}>You typed: {text}</Text>
+          ) : null}
+        </View>
+
+        <Text style={styles.sectionTitle}>📜 Scroll down to see more items:</Text>
         
-        {text ? (
-          <Text style={styles.inputDisplay}>You typed: {text}</Text>
-        ) : null}
-      </View>
+        {items.map((item, index) => (
+          <TouchableOpacity 
+            key={index} 
+            style={[styles.listItem, { backgroundColor: index % 2 === 0 ? '#f8f9fa' : '#e3f2fd' }]}
+            onPress={() => Alert.alert('Tapped!', 'You tapped on ' + item)}
+          >
+            <Text style={styles.listItemText}>{item}</Text>
+            <Text style={styles.listItemSubtext}>Tap to interact • Index: {index}</Text>
+          </TouchableOpacity>
+        ))}
+        
+        <View style={styles.footer}>
+          <Text style={styles.footerText}>🎉 You reached the end!</Text>
+          <Text style={styles.footerSubtext}>This proves scrolling works perfectly</Text>
+        </View>
+      </ScrollView>
       
       <StatusBar style="auto" />
     </View>
@@ -56,14 +85,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f0f9ff',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
     paddingHorizontal: 20,
     paddingTop: 60,
-    paddingBottom: 20,
+    paddingBottom: 40,
   },
-  content: {
-    flex: 1,
+  header: {
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    marginBottom: 30,
   },
   title: {
     fontSize: 28,
@@ -75,7 +108,7 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     color: '#64748b',
-    marginBottom: 32,
+    marginBottom: 10,
     textAlign: 'center',
   },
   counterContainer: {
@@ -93,18 +126,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,
+    marginBottom: 10,
+  },
+  alertButton: {
+    backgroundColor: '#10b981',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
   },
   buttonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
   },
+  inputSection: {
+    alignItems: 'center',
+    marginBottom: 30,
+    width: '100%',
+  },
   textInput: {
     borderWidth: 1,
     borderColor: '#d1d5db',
     borderRadius: 8,
     padding: 12,
-    width: 200,
+    width: '80%',
     marginBottom: 15,
     backgroundColor: '#fff',
     fontSize: 16,
@@ -113,6 +158,46 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#374151',
     fontStyle: 'italic',
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#1e293b',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  listItem: {
+    padding: 16,
+    marginBottom: 8,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+  },
+  listItemText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#1f2937',
+    marginBottom: 4,
+  },
+  listItemSubtext: {
+    fontSize: 12,
+    color: '#6b7280',
+  },
+  footer: {
+    alignItems: 'center',
+    marginTop: 20,
+    padding: 20,
+  },
+  footerText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#059669',
+    marginBottom: 8,
+  },
+  footerSubtext: {
+    fontSize: 14,
+    color: '#6b7280',
+    textAlign: 'center',
   },
 });`);
 

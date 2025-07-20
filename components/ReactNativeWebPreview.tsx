@@ -34,12 +34,17 @@ export default function ReactNativeWebPreview({ code, platform }: ReactNativeWeb
               background-color: ${platform === 'ios' ? '#000' : '#fff'};
               overflow: hidden;
               -webkit-font-smoothing: antialiased;
+              /* Enable touch scrolling */
+              -webkit-overflow-scrolling: touch;
+              touch-action: manipulation;
             }
             #root {
               width: 100vw;
               height: 100vh;
               display: flex;
               flex-direction: column;
+              /* Enable touch events */
+              touch-action: pan-x pan-y;
             }
             .status-bar {
               height: 44px;
@@ -60,6 +65,10 @@ export default function ReactNativeWebPreview({ code, platform }: ReactNativeWeb
               display: flex;
               flex-direction: column;
               min-height: 0; /* Important for flex containers */
+              /* Enable smooth mobile-like scrolling */
+              -webkit-overflow-scrolling: touch;
+              overscroll-behavior: contain;
+              scroll-behavior: smooth;
             }
             .error-container {
               padding: 20px;
@@ -94,6 +103,27 @@ export default function ReactNativeWebPreview({ code, platform }: ReactNativeWeb
               display: flex;
               flex-direction: column;
               min-height: 0;
+              /* Enable touch scrolling */
+              -webkit-overflow-scrolling: touch;
+              touch-action: pan-x pan-y;
+            }
+            /* Mobile-friendly touch targets */
+            button, input, [role="button"] {
+              touch-action: manipulation;
+              -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+            }
+            /* Smooth scrolling for all scrollable elements */
+            * {
+              -webkit-overflow-scrolling: touch;
+              scroll-behavior: smooth;
+            }
+            /* Hide scrollbars when requested */
+            .hidden-scrollbar::-webkit-scrollbar {
+              display: none;
+            }
+            .hidden-scrollbar {
+              -ms-overflow-style: none;
+              scrollbar-width: none;
             }
           </style>
         </head>
@@ -109,10 +139,14 @@ export default function ReactNativeWebPreview({ code, platform }: ReactNativeWeb
           <script type="text/babel" data-type="module">
             const { useState, useEffect, useCallback } = React;
             
-            // React Native Web Components with proper mobile layout
+            // React Native Web Components with proper style filtering
             const View = ({ style = {}, children, ...props }) => {
-              const webStyle = {
-                display: 'flex',
+              // Filter out invalid web CSS properties and convert React Native props
+              const webStyle = {};
+              
+              // Valid CSS properties mapping
+              const validProps = {
+                display: style.display || 'flex',
                 flexDirection: style.flexDirection || 'column',
                 alignItems: style.alignItems,
                 justifyContent: style.justifyContent,
@@ -125,24 +159,40 @@ export default function ReactNativeWebPreview({ code, platform }: ReactNativeWeb
                 height: style.height,
                 position: style.position,
                 minHeight: style.minHeight,
-                // Ensure View takes full container space when flex: 1
-                ...(style.flex === 1 && { 
-                  flex: '1 1 0%',
-                  minHeight: '100%'
-                }),
-                ...style
+                borderWidth: style.borderWidth,
+                borderColor: style.borderColor,
+                borderStyle: style.borderWidth ? 'solid' : undefined,
+                opacity: style.opacity,
+                zIndex: style.zIndex,
+                overflow: style.overflow,
+                color: style.color,
+                fontSize: style.fontSize,
+                fontWeight: style.fontWeight,
+                textAlign: style.textAlign,
+                lineHeight: style.lineHeight
               };
+              
+              // Add valid properties to webStyle
+              Object.entries(validProps).forEach(([key, value]) => {
+                if (value !== undefined && value !== null) {
+                  webStyle[key] = value;
+                }
+              });
               
               // Handle paddingHorizontal and paddingVertical
               if (style.paddingHorizontal !== undefined) {
                 webStyle.paddingLeft = style.paddingHorizontal;
                 webStyle.paddingRight = style.paddingHorizontal;
-                delete webStyle.paddingHorizontal;
               }
               if (style.paddingVertical !== undefined) {
                 webStyle.paddingTop = style.paddingVertical;
                 webStyle.paddingBottom = style.paddingVertical;
-                delete webStyle.paddingVertical;
+              }
+              
+              // Ensure View takes full container space when flex: 1
+              if (style.flex === 1) {
+                webStyle.flex = '1 1 0%';
+                webStyle.minHeight = '100%';
               }
               
               return React.createElement('div', { 
@@ -152,7 +202,10 @@ export default function ReactNativeWebPreview({ code, platform }: ReactNativeWeb
             };
             
             const Text = ({ style = {}, children, ...props }) => {
-              const webStyle = {
+              // Filter valid text CSS properties
+              const webStyle = {};
+              
+              const validTextProps = {
                 fontSize: style.fontSize || 16,
                 color: style.color || '#000',
                 fontWeight: style.fontWeight,
@@ -162,8 +215,22 @@ export default function ReactNativeWebPreview({ code, platform }: ReactNativeWeb
                 margin: style.margin,
                 padding: style.padding,
                 fontStyle: style.fontStyle,
-                ...style
+                lineHeight: style.lineHeight,
+                textTransform: style.textTransform,
+                textDecoration: style.textDecoration,
+                opacity: style.opacity,
+                backgroundColor: style.backgroundColor,
+                borderRadius: style.borderRadius,
+                display: style.display,
+                width: style.width,
+                height: style.height
               };
+              
+              Object.entries(validTextProps).forEach(([key, value]) => {
+                if (value !== undefined && value !== null) {
+                  webStyle[key] = value;
+                }
+              });
               
               return React.createElement('span', { 
                 style: webStyle,
@@ -172,19 +239,27 @@ export default function ReactNativeWebPreview({ code, platform }: ReactNativeWeb
             };
             
             const TouchableOpacity = ({ style = {}, onPress, children, ...props }) => {
+              // Filter valid button CSS properties
               const webStyle = {
                 border: 'none',
                 backgroundColor: style.backgroundColor || 'transparent',
                 cursor: 'pointer',
                 padding: style.padding || 0,
-                paddingHorizontal: style.paddingHorizontal,
-                paddingVertical: style.paddingVertical,
                 borderRadius: style.borderRadius,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 outline: 'none',
-                ...style
+                fontSize: style.fontSize,
+                color: style.color,
+                fontWeight: style.fontWeight,
+                margin: style.margin,
+                width: style.width,
+                height: style.height,
+                opacity: style.opacity,
+                position: style.position,
+                zIndex: style.zIndex,
+                overflow: style.overflow
               };
               
               // Handle paddingHorizontal and paddingVertical
@@ -197,9 +272,21 @@ export default function ReactNativeWebPreview({ code, platform }: ReactNativeWeb
                 webStyle.paddingBottom = style.paddingVertical;
               }
               
+              // Filter out undefined values
+              Object.keys(webStyle).forEach(key => {
+                if (webStyle[key] === undefined || webStyle[key] === null) {
+                  delete webStyle[key];
+                }
+              });
+              
               return React.createElement('button', {
                 style: webStyle,
-                onClick: onPress,
+                onClick: (e) => {
+                  console.log('TouchableOpacity clicked');
+                  if (onPress) {
+                    onPress(e);
+                  }
+                },
                 ...props
               }, children);
             };
@@ -213,42 +300,100 @@ export default function ReactNativeWebPreview({ code, platform }: ReactNativeWeb
                 if (onChangeText) onChangeText(newValue);
               };
               
+              // Filter valid input CSS properties
+              const webStyle = {
+                padding: 10,
+                border: '1px solid #ccc',
+                borderRadius: 4,
+                fontSize: 16,
+                outline: 'none',
+                backgroundColor: style.backgroundColor || '#fff',
+                color: style.color || '#000',
+                width: style.width,
+                height: style.height,
+                margin: style.margin,
+                fontWeight: style.fontWeight,
+                textAlign: style.textAlign,
+                opacity: style.opacity,
+                borderColor: style.borderColor,
+                borderWidth: style.borderWidth
+              };
+              
+              // Add border style if borderWidth is specified
+              if (style.borderWidth) {
+                webStyle.borderStyle = 'solid';
+                webStyle.border = style.borderWidth + 'px solid ' + (style.borderColor || '#ccc');
+              }
+              
+              // Filter out undefined values
+              Object.keys(webStyle).forEach(key => {
+                if (webStyle[key] === undefined || webStyle[key] === null) {
+                  delete webStyle[key];
+                }
+              });
+              
               return React.createElement('input', {
                 type: 'text',
                 value: inputValue,
                 onChange: handleChange,
                 placeholder,
-                style: {
-                  padding: 10,
-                  border: '1px solid #ccc',
-                  borderRadius: 4,
-                  fontSize: 16,
-                  outline: 'none',
-                  ...(placeholderTextColor && {
-                    '::placeholder': { color: placeholderTextColor }
-                  }),
-                  ...style
-                },
+                style: webStyle,
                 ...props
               });
             };
             
-            const ScrollView = ({ style = {}, children, contentContainerStyle, ...props }) => {
+            const ScrollView = ({ style = {}, children, contentContainerStyle, horizontal = false, showsVerticalScrollIndicator = true, showsHorizontalScrollIndicator = true, ...props }) => {
+              // Filter valid scroll container CSS properties
               const containerStyle = {
                 overflow: 'auto',
+                WebkitOverflowScrolling: 'touch',
+                overscrollBehavior: 'contain',
+                scrollBehavior: 'smooth',
                 flex: style.flex,
                 height: style.height,
                 width: style.width,
                 backgroundColor: style.backgroundColor,
-                ...style
+                margin: style.margin,
+                padding: style.padding,
+                borderRadius: style.borderRadius,
+                position: style.position
               };
               
+              // Handle horizontal scrolling
+              if (horizontal) {
+                containerStyle.overflowX = 'auto';
+                containerStyle.overflowY = 'hidden';
+                containerStyle.display = 'flex';
+                containerStyle.flexDirection = 'row';
+              }
+              
+              // Hide scrollbars if disabled
+              if (!showsVerticalScrollIndicator || !showsHorizontalScrollIndicator) {
+                containerStyle.scrollbarWidth = 'none';
+                containerStyle.msOverflowStyle = 'none';
+              }
+              
+              // Filter out undefined values
+              Object.keys(containerStyle).forEach(key => {
+                if (containerStyle[key] === undefined || containerStyle[key] === null) {
+                  delete containerStyle[key];
+                }
+              });
+              
               const contentStyle = {
-                minHeight: '100%',
+                minHeight: horizontal ? 'auto' : '100%',
                 display: 'flex',
-                flexDirection: 'column',
-                ...contentContainerStyle
+                flexDirection: horizontal ? 'row' : 'column'
               };
+              
+              // Add contentContainerStyle if provided
+              if (contentContainerStyle) {
+                Object.entries(contentContainerStyle).forEach(([key, value]) => {
+                  if (value !== undefined && value !== null) {
+                    contentStyle[key] = value;
+                  }
+                });
+              }
               
               return React.createElement('div', { 
                 style: containerStyle,
@@ -260,7 +405,16 @@ export default function ReactNativeWebPreview({ code, platform }: ReactNativeWeb
             
             const Alert = {
               alert: (title, message, buttons) => {
-                alert(title + (message ? '\\n' + message : ''));
+                // Create a more mobile-like alert experience
+                const alertMessage = title + (message ? '\\n\\n' + message : '');
+                
+                // Use native browser alert for now - could be enhanced with custom modals
+                if (typeof window !== 'undefined') {
+                  window.alert(alertMessage);
+                }
+                
+                // Log for debugging
+                console.log('Alert triggered:', title, message);
               }
             };
             
@@ -349,7 +503,7 @@ export default function ReactNativeWebPreview({ code, platform }: ReactNativeWeb
       srcDoc={htmlContent}
       className="w-full h-full border-0"
       title="React Native Web Preview"
-      sandbox="allow-scripts"
+      sandbox="allow-scripts allow-modals"
     />
   );
 }
